@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Love GPA Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      background: #f9f9f9;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .trait {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+    }
+    select {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+    }
+    #result {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 1.2em;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Love GPA Calculator</h1>
+  <p style="text-align:center;">Based on 1 Corinthians 13</p>
+
+  <form id="gpaForm">
+    <div id="traits"></div>
+    <button type="button" onclick="calculateGPA()">Calculate GPA</button>
+    <button type="button" onclick="saveResults()">Save My Results</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    const traits = [
+      "long-suffering",
+      "kind",
+      "does not envy",
+      "does not parade",
+      "is not puffed up",
+      "not behave rudely",
+      "is not provoked",
+      "thinks no evil",
+      "not rejoice in iniquity",
+      "rejoices in truth",
+      "bears all things",
+      "believes all things",
+      "hopes all things",
+      "endures all things"
+    ];
+
+    const gradeValues = {
+      "A": 4.0,
+      "B": 3.0,
+      "C": 2.0,
+      "D": 1.0,
+      "F": 0.0
+    };
+
+    const traitsContainer = document.getElementById('traits');
+
+    traits.forEach(trait => {
+      const div = document.createElement('div');
+      div.className = 'trait';
+      div.innerHTML = `
+        <label for="${trait}">${trait}</label>
+        <select name="${trait}" required>
+          <option value="">--Select Grade--</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+          <option value="D">D</option>
+          <option value="F">F</option>
+        </select>
+      `;
+      traitsContainer.appendChild(div);
+    });
+
+    function calculateGPA() {
+      const form = document.getElementById('gpaForm');
+      const selects = form.querySelectorAll('select');
+      let totalPoints = 0;
+      let count = 0;
+      for (let select of selects) {
+        const grade = select.value;
+        if (gradeValues[grade] !== undefined) {
+          totalPoints += gradeValues[grade];
+          count++;
+        }
+      }
+      const gpa = (totalPoints / count).toFixed(2);
+      document.getElementById('result').textContent = `Your Love GPA is ${gpa}`;
+    }
+
+    function saveResults() {
+      const date = new Date().toLocaleString();
+      const resultText = document.getElementById('result').textContent;
+      if (!resultText) {
+        alert("Please calculate your GPA first.");
+        return;
+      }
+      const blob = new Blob([
+        `Love GPA Report\nDate: ${date}\n${resultText}\nKeep growing in love! ❤️`
+      ], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'love_gpa.txt';
+      link.click();
+    }
+  </script>
+</body>
+</html>
